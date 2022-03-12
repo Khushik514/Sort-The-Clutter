@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="colorPrimary">@color/TitleBar</item>
+        <item name="colorPrimaryDark">@color/TitleBar</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionBarTheme">@style/ActionBarColor</item>
+    </style>
+
+    <style name="ActionBarColor" parent="Widget.AppCompat.ActionBar">
+    <item name="android:textColorPrimary">#50C1F4</item>
+    </style>
+</resources>

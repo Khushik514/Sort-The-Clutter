@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#80C7DC</color>
+    <color name="colorPrimaryDark">#248B98</color>
+    <color name="colorAccent">#28C1D5</color>
+    <color name="TitleBar">#4F63CF</color>
+    <color name="this_app_theme">#50C1F4</color>
+</resources>

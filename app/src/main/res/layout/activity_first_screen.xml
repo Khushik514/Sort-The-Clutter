@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".FirstScreen">
+
+    <ImageView
+        android:id="@+id/iV1"
+        android:layout_width="200dp"
+        android:layout_height="90dp"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:layout_marginTop="50sp"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:id="@+id/iV2"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:layout_marginTop="50sp"
+        app:srcCompat="@drawable/logoplaystore" />
+
+    <TextView
+        android:id="@+id/tV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:layout_marginLeft="25sp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="25sp"
+        android:text="An android application that helps you classify whether your clutter is organic or recyclable!"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="19sp"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:id="@+id/tV2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:text="Sort The Clutter!"
+        android:textColor="#0439A3"
+        android:textSize="50sp"
+        android:textStyle="bold" />
+
+</LinearLayout>
