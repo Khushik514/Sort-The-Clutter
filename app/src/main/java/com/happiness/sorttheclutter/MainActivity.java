@@ -87,46 +87,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    protected void onActivityResult(int reqCode, int resCode ,Intent idata) {
-        super.onActivityResult(reqCode, resCode, idata);
-        if (reqCode == CAMERA && resCode == Activity.RESULT_OK) {
-            Bitmap pic = (Bitmap) idata.getExtras().get("data");
-            int height = pic.getHeight();
-            int width = pic.getWidth();
-            tvRes.setText(width + "   " + height);
-            iv.setImageBitmap(pic);
-            Bitmap resizedBitmap = Bitmap.createScaledBitmap(pic, 600, 600, false);
-            iv.setImageBitmap(Bitmap.createScaledBitmap(resizedBitmap, 800, 800, false));
-            int[] pix = new int[224 * 224];
-            resizedBitmap.getPixels(pix, 0, 224, 0, 0, 224, 224);
-            values = new int[224 * 224];
-            try {
-                tf = new Interpreter(loadModelFile(), tfOptions);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            data = ByteBuffer.allocateDirect(4 * 224 * 224 * 3);
-            data.order(ByteOrder.nativeOrder());
-            float[][] label = new float[1][2];
-            Bitmap input_image = getResizedBitmap(pic, 224, 224);
 
-            convertBitmapToByteBuffer(input_image);
+    private MappedByteBuffer modelLoad() throws IOException {
 
-            tf.run(data, label);
-
-            textView1 = this.findViewById(R.id.tVresult);
-            textView2 = this.findViewById(R.id.textViewRes);
-            textView1.setText((label[0][0] * 100) + " %");
-            textView2.setText((label[0][1] * 100) + " %");
-            if (label[0][0] > label[0][1])
-                tvRes.setText("IT IS ORGANIC!");
-            else
-                tvRes.setText("IT IS RECYCLABLE!");
-
-            iv.setVisibility(View.VISIBLE);
-        }
+        AssetFileDescriptor fileDescriptor = this.getAssets().openFd("model.tflite");
+        FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileChannel fileChannel = inputStream.getChannel();
+        long startOffset = fileDescriptor.getStartOffset();
+        long declaredLength = fileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
     }
-    private void convertBitmapToByteBuffer(Bitmap bitmap) {
+
+    private void bitmap_byte(Bitmap bitmap) {
         if (data == null) {
             return;
         }
@@ -142,7 +114,48 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    public Bitmap getResizedBitmap(Bitmap bm, int w, int h){
+
+    protected void onActivityResult(int reqCode, int resCode ,Intent idata) {
+        super.onActivityResult(reqCode, resCode, idata);
+        if (reqCode == CAMERA && resCode == Activity.RESULT_OK) {
+            Bitmap pic = (Bitmap) idata.getExtras().get("data");
+            int height = pic.getHeight();
+            int width = pic.getWidth();
+            tvRes.setText(width + "   " + height);
+            iv.setImageBitmap(pic);
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(pic, 600, 600, false);
+            iv.setImageBitmap(Bitmap.createScaledBitmap(resizedBitmap, 800, 800, false));
+            int[] pix = new int[224 * 224];
+            resizedBitmap.getPixels(pix, 0, 224, 0, 0, 224, 224);
+            values = new int[224 * 224];
+            try {
+                tf = new Interpreter(modelLoad(), tfOptions);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            data = ByteBuffer.allocateDirect(4 * 224 * 224 * 3);
+            data.order(ByteOrder.nativeOrder());
+            float[][] label = new float[1][2];
+            Bitmap input_image = bitmapResize(pic, 224, 224);
+
+            bitmap_byte(input_image);
+
+            tf.run(data, label);
+
+            textView1 = this.findViewById(R.id.tVresult);
+            textView2 = this.findViewById(R.id.textViewRes);
+            textView1.setText((label[0][0] * 100) + " %");
+            textView2.setText((label[0][1] * 100) + " %");
+            if (label[0][0] > label[0][1])
+                tvRes.setText("IT IS ORGANIC!");
+            else
+                tvRes.setText("IT IS RECYCLABLE!");
+
+            iv.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public Bitmap bitmapResize(Bitmap bm, int w, int h){
         int height = bm.getHeight();
         int width = bm.getWidth();
         float scaleHeight = ((float) h )/height;
@@ -154,14 +167,4 @@ public class MainActivity extends AppCompatActivity {
         return resizedBitmap;
 
     }
-    private MappedByteBuffer loadModelFile() throws IOException {
-
-        AssetFileDescriptor fileDescriptor = this.getAssets().openFd("model.tflite");
-        FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
-        FileChannel fileChannel = inputStream.getChannel();
-        long startOffset = fileDescriptor.getStartOffset();
-        long declaredLength = fileDescriptor.getDeclaredLength();
-        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
-    }
-    
 }
